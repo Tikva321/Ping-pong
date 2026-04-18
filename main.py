@@ -4,12 +4,11 @@ back = (200, 255, 255)
 win_width = 600
 win_height = 500
 window = display.set_mode((win_width, win_height))
-window.fill(back)
 
 class GameSprite(sprite.Sprite):
     def __init__(self, player_image, player_x, player_y, player_speed):
         super().__init__()
-        self.image = transform.scale(image.load(player_image), (65, 65))
+        self.image = transform.scale(image.load(player_image), (20, 100))
         self.speed = player_speed
         self.rect = self.image.get_rect()
         self.rect.x = player_x
@@ -21,19 +20,41 @@ class Player(GameSprite):
     def __init__(self, player_image, player_x, player_y, player_speed):
         super().__init__(player_image, player_x, player_y, player_speed)
 
-    def update(self):
+    def update_1(self):
         keys = key.get_pressed()
-        if keys[K_LEFT] and self.rect.x > 5:
-            self.rect.x -= self.speed
-        if keys[K_RIGHT] and self.rect.x < 625:
-            self.rect.x += self.speed
+        if keys[K_UP] and self.rect.y > 5: 
+            self.rect.y -= self.speed
+        if keys[K_DOWN] and self.rect.y < win_height - 70: 
+            self.rect.y += self.speed
+
+    def update_2(self):
+        keys = key.get_pressed()
+        if keys[K_w] and self.rect.y > 5: 
+            self.rect.y -= self.speed
+        if keys[K_s] and self.rect.y < win_height - 70: 
+            self.rect.y += self.speed
 
 clock = time.Clock()
 FPS = 60
 game = True
 
+player1 = Player('racket.png', 50, 200, 5)  
+player2 = Player('racket.png', 535, 200, 5)  
+
 while game:
     for e in event.get():
+        if e.type == QUIT:
+            game = False
+
+    player1.update_1()
+    player2.update_2() 
+
+    window.fill(back)
+    player1.reset()
+    player2.reset()
+
+    display.update()
+    clock.tick(FPS)
         if e.type == QUIT:
             game = False
 
